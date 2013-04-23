@@ -44,16 +44,19 @@ class SpeedOrder(Thread):
     def send_command(self, _x, _y, _z):
         print(_x, _y, _z)
         from math import floor, ceil
-        x = (_x * Xmax) / 32767
-        y = (_y * Ymax) / 32767
-        z = (_z * Zmax) / 65536 + Zmax / 2
 
-        left = - round((80 * (y + x)) / (80 + abs(x)))
-        right = - round((80 * (y - x)) / (80 + abs(x)))
-        z = round(z)
+        #x = (_x * Vmax) / 32767
+        #y = (_y * Vmax) / 32767
+        #left = - round((Vmax * (y + x)) / (Vmax + abs(x)))
+        #right = - round((Vmax * (y - x)) / (Vmax + abs(x)))
 
-        #print(left, right, angle)
-        print("[%+3d %+3d] (%4d)" %(right, left, z))
+        v = - round((_y * Vmax) / 32767)
+        theta = - round((_x * Omax) / 32767)
+
+        z = round((_z * Zmax) / 65536 + Zmax / 2)
+
+        #print("[%+3d %+3d] (%4d)" %(right, left, z))
+        print("[%+3d] (%+3d) (%4d)" %(v, theta, z))
         #self.asserv.speed(self.x, self.y)
 
 class Processor:
@@ -70,23 +73,10 @@ class Processor:
     def event(self, axes, buttons):
         #print(axes, buttons)
         self.speed.update(axes[0], axes[1], axes[2])
-        if self.states:
-            if self.states[0] == 0 and buttons[0] == 1:
-                print("Button 1 pressed!")
-            elif self.states[1] == 0 and buttons[1] == 1:
-                print("Button 2 pressed!")
-            elif self.states[2] == 0 and buttons[2] == 1:
-                print("Button 3 pressed!")
-            elif self.states[3] == 0 and buttons[3] == 1:
-                print("Button 4 pressed!")
-            elif self.states[4] == 0 and buttons[4] == 1:
-                print("Button 5 pressed!")
-            elif self.states[5] == 0 and buttons[5] == 1:
-                print("Button 6 pressed!")
-            elif self.states[6] == 0 and buttons[6] == 1:
-                print("Button 7 pressed!")
-            elif self.states[7] == 0 and buttons[7] == 1:
-                print("Button 8 pressed!")
+        if self.states and len(self.states) == len(buttons):
+            for i in range(len(buttons)):
+                if self.states[i] == 0 and buttons[i] == 1:
+                    print("Button %d pressed!" %i)
         self.states = buttons
 
 

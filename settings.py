@@ -14,7 +14,9 @@ LIB = 'libjsread.so'
 # Delay between two new message
 DELAY = 0.1
 
-
-Xmax = 80
-Ymax = 80
+# Vitesse max
+Vmax = 80
+# Omega max
+Omax = 40
+# Z max
 Zmax = 1023
