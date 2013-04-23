@@ -1,4 +1,5 @@
-HOST = "localhost"
+HOST = "ash"
 PORT = 1300
-DEVICE = '/dev/input/js0'
+DEVICES = '/dev/input'
 LIB = 'libjsread.so'
+REGEXP = '^js[0-9]+$'

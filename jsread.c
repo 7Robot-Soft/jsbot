@@ -42,7 +42,7 @@ int jsread(char * device, int(*callback)(int,int*,int,char*), int verbose)
     uint8_t axmap[ABS_MAX + 1];
 
     if ((fd = open(device, O_RDONLY)) < 0) {
-        perror("jstest");
+        perror("open");
         return 1;
     }
 
@@ -81,7 +81,7 @@ int jsread(char * device, int(*callback)(int,int*,int,char*), int verbose)
 
     while (1) {
         if (read(fd, &js, sizeof(struct js_event)) != sizeof(struct js_event)) {
-            perror("\njstest: error reading");
+            perror("\nread");
             return 1;
         }
 
