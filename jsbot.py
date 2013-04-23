@@ -42,7 +42,7 @@ class SpeedOrder(Thread):
                 self.send_command(self.x, self.y, self.z)
 
     def send_command(self, _x, _y, _z):
-        print(_x, _y, _z)
+        #print(_x, _y, _z)
         from math import floor, ceil
 
         #x = (_x * Vmax) / 32767
@@ -57,7 +57,7 @@ class SpeedOrder(Thread):
 
         #print("[%+3d %+3d] (%4d)" %(right, left, z))
         print("[%+3d] (%+3d) (%4d)" %(v, theta, z))
-        #self.asserv.speed(self.x, self.y)
+        self.asserv.setSpeed(v, theta)
 
 class Processor:
     def __init__(self, host, port):
