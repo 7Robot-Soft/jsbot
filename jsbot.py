@@ -57,7 +57,7 @@ class SpeedOrder(Thread):
 
         #print("[%+3d %+3d] (%4d)" %(right, left, z))
         print("[%+3d] (%+3d) (%4d)" %(v, theta, z))
-        self.asserv.setSpeed(v, theta)
+        self.asserv.speedOmega(v/100.0, theta/100.0, 1, 1, 1, 1)
 
 class Processor:
     def __init__(self, host, port):
@@ -69,14 +69,46 @@ class Processor:
         self.states = None
         self.speed = SpeedOrder(self.asserv)
         self.speed.start()
+        self.sock2 = socket.socket()
+        self.sock2.connect((HOST, PORT+6))
+        self.mother_file = self.sock2.makefile(mode='rw')
+        self.mother = Channel(self.mother_file.buffer,
+                lambda name, args: name, proto = 'mother')
 
     def event(self, axes, buttons):
         #print(axes, buttons)
+        self.pince = axes[2] < 0
         self.speed.update(axes[0], axes[1], axes[2])
         if self.states and len(self.states) == len(buttons):
             for i in range(len(buttons)):
                 if self.states[i] == 0 and buttons[i] == 1:
-                    print("Button %d pressed!" %i)
+                    #print("Button %d pressed!" %i)
+                    if self.pince:
+                        if i == 2:
+                            self.mother.sortirPince()
+                        elif i == 3:
+                            self.mother.getNombreVerres()
+                        elif i == 0:
+                            self.mother.chopperVerre()
+                        elif i == 1:
+                            self.mother.lacherVerres()
+                    else:
+                        if i == 2:
+                            self.mother.BougiesOn()
+                        elif i == 3:
+                            self.mother.BougiesOff()
+                        elif i == 0:
+                            self.mother.BougiesHitBot()
+                        elif i == 1:
+                            self.mother.BougiesHitTop()
+                    if i == 4:
+                        self.mother.startAX12()
+                    elif i == 5:
+                        self.mother.FunnyAction()
+                    elif i == 6:
+                        self.mother.stopAX12()
+                    elif i == 7:
+                        self.asserv.stop()
         self.states = buttons
 
 
